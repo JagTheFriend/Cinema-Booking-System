@@ -1,0 +1,24 @@
+services:
+  valkey-server:
+    image: valkey/valkey:latest
+    container_name: valkey-server
+    environment:
+      - VALKEY_EXTRA_FLAGS=--save 60 1 --loglevel warning
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./volumes/valkey_data:/data
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cinema 
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres_data/:/var/lib/postgresql
+
