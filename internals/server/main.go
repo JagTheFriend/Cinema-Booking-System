@@ -9,10 +9,11 @@ import (
 	"time"
 
 	db "cinema_booking/internals/postgres/generated"
-	"cinema_booking/internals/server/routes/booking"
-	"cinema_booking/internals/server/routes/payment"
-	"cinema_booking/internals/server/routes/user"
 	"cinema_booking/internals/valkey"
+
+	"cinema_booking/internals/services/booking"
+	"cinema_booking/internals/services/payment"
+	"cinema_booking/internals/services/user"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5"
