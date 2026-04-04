@@ -1,3 +1,4 @@
+// Package server contains the code to start the server and register the routes.
 package server
 
 import (
@@ -7,7 +8,13 @@ import (
 	"os"
 	"time"
 
+	db "cinema_booking/internals/postgres/generated"
+	"cinema_booking/internals/server/routes/booking"
+	"cinema_booking/internals/server/routes/payment"
+	"cinema_booking/internals/server/routes/user"
+
 	"github.com/go-playground/validator/v10"
+	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 )
@@ -59,11 +66,36 @@ func StartServer() {
 
 	e.Validator = &CustomValidator{validator: validator.New()}
 
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	conn, err := pgx.Connect(ctx, "user=pqgotest dbname=pqgotest sslmode=verify-full")
+	if err != nil {
+		panic("Failed to connect to database: " + err.Error())
+	}
+	defer func() {
+		err := conn.Close(ctx)
+		if err != nil {
+			slog.Error("Failed to close database connection", "error", err.Error())
+		}
+	}()
+
+	queries := db.New(conn)
+
 	groupedRoute := e.Group("/api/v1")
 
 	groupedRoute.GET("/health", func(c *echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
+
+	userRoute := user.NewUserRoute(groupedRoute, queries)
+	userRoute.RegisterRoutes()
+
+	bookingRoute := booking.NewBookingRoute(groupedRoute, queries)
+	bookingRoute.RegisterRoutes()
+
+	paymentRoute := payment.NewPaymentRoute(groupedRoute, queries)
+	paymentRoute.RegisterRoutes()
 
 	e.AcquireContext().Logger().Info("Server started on port: " + port)
 
