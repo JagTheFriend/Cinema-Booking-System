@@ -32,25 +32,25 @@ func NewPaymentStore(ctx context.Context, db *db.Queries, valkey *glide.Client) 
 
 // CreatePayment inserts a new payment into the database
 func (s *PaymentStoreImpl) CreatePayment(arg *db.CreatePaymentParams) (*db.Payment, error) {
-	return s.db.CreatePayment(context.Background(), arg)
+	return s.db.CreatePayment(s.ctx, arg)
 }
 
 // GetPaymentByID fetches a payment by its ID
 func (s *PaymentStoreImpl) GetPaymentByID(id string) (*db.Payment, error) {
-	return s.db.GetPaymentByID(context.Background(), id)
+	return s.db.GetPaymentByID(s.ctx, id)
 }
 
 // ListPaymentsByUser fetches all payments for a given user
 func (s *PaymentStoreImpl) ListPaymentsByUser(userID string) ([]*db.Payment, error) {
-	return s.db.ListPaymentsByUser(context.Background(), userID)
+	return s.db.ListPaymentsByUser(s.ctx, userID)
 }
 
 // UpdatePayment updates the updated_at timestamp of a payment
 func (s *PaymentStoreImpl) UpdatePayment(id string) (*db.Payment, error) {
-	return s.db.UpdatePayment(context.Background(), id)
+	return s.db.UpdatePayment(s.ctx, id)
 }
 
 // DeletePayment removes a payment from the database
 func (s *PaymentStoreImpl) DeletePayment(id string) error {
-	return s.db.DeletePayment(context.Background(), id)
+	return s.db.DeletePayment(s.ctx, id)
 }
