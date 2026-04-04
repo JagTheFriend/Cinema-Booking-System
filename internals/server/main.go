@@ -12,6 +12,7 @@ import (
 	"cinema_booking/internals/server/routes/booking"
 	"cinema_booking/internals/server/routes/payment"
 	"cinema_booking/internals/server/routes/user"
+	"cinema_booking/internals/valkey"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5"
@@ -81,6 +82,7 @@ func StartServer() {
 	}()
 
 	queries := db.New(conn)
+	valkey := valkey.GetValKeyClient()
 
 	groupedRoute := e.Group("/api/v1")
 
@@ -88,13 +90,13 @@ func StartServer() {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	userRoute := user.NewUserRoute(groupedRoute, queries)
+	userRoute := user.NewUserRoute(groupedRoute, queries, valkey)
 	userRoute.RegisterRoutes()
 
-	bookingRoute := booking.NewBookingRoute(groupedRoute, queries)
+	bookingRoute := booking.NewBookingRoute(groupedRoute, queries, valkey)
 	bookingRoute.RegisterRoutes()
 
-	paymentRoute := payment.NewPaymentRoute(groupedRoute, queries)
+	paymentRoute := payment.NewPaymentRoute(groupedRoute, queries, valkey)
 	paymentRoute.RegisterRoutes()
 
 	e.AcquireContext().Logger().Info("Server started on port: " + port)
