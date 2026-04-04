@@ -4,6 +4,8 @@ import (
 	"context"
 
 	db "cinema_booking/internals/postgres/generated"
+
+	glide "github.com/valkey-io/valkey-glide/go/v2"
 )
 
 type PaymentStore interface {
@@ -15,12 +17,16 @@ type PaymentStore interface {
 }
 
 type PaymentStoreImpl struct {
-	db *db.Queries
+	db     *db.Queries
+	valkey *glide.Client
+	ctx    context.Context
 }
 
-func NewPaymentStore(db *db.Queries) PaymentStore {
+func NewPaymentStore(ctx context.Context, db *db.Queries, valkey *glide.Client) PaymentStore {
 	return &PaymentStoreImpl{
-		db: db,
+		db:     db,
+		valkey: valkey,
+		ctx:    ctx,
 	}
 }
 
