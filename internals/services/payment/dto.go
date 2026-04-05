@@ -1,9 +1,13 @@
 package payment
 
-type CreatePaymentDTO struct {
+type CreatePaymentRequest struct {
 	BookingID string `json:"bookingId" validate:"required"`
 }
 
-type UpdatePaymentDTO struct {
-	// extend later if needed
+type UpdatePaymentRequest struct {
+	ID string `json:"id" validate:"required"`
+}
+
+type DeletePaymentRequest struct {
+	ID string `json:"id" validate:"required"`
 }
