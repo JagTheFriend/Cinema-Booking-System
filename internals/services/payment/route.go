@@ -2,6 +2,8 @@
 package payment
 
 import (
+	"context"
+
 	db "cinema_booking/internals/postgres/generated"
 
 	"github.com/labstack/echo/v5"
@@ -12,14 +14,17 @@ type PaymentRoute struct {
 	e      *echo.Group
 	db     *db.Queries
 	valkey *glide.Client
+	store  *PaymentStore
 }
 
 func NewPaymentRoute(e *echo.Group, db *db.Queries, valkey *glide.Client) *PaymentRoute {
 	grouped := e.Group("/payment")
+	store := NewPaymentStore(context.Background(), db, valkey)
 	return &PaymentRoute{
 		e:      grouped,
 		db:     db,
 		valkey: valkey,
+		store:  &store,
 	}
 }
 
