@@ -68,10 +68,15 @@ func StartServer() {
 
 	e.Validator = &CustomValidator{validator: validator.New()}
 
+	dbURL, ok := os.LookupEnv("GOOSE_DBSTRING")
+	if !ok {
+		panic("GOOSE_DBSTRING not set")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	conn, err := pgx.Connect(ctx, "user=pqgotest dbname=pqgotest sslmode=verify-full")
+	conn, err := pgx.Connect(ctx, dbURL)
 	if err != nil {
 		panic("Failed to connect to database: " + err.Error())
 	}
