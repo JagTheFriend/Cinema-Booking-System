@@ -20,7 +20,7 @@ type BookingRoute struct {
 
 func NewBookingRoute(e *echo.Group, db *db.Queries, valkey any) *BookingRoute { // valkey kept for consistency
 	grouped := e.Group("/booking")
-	store := NewBookingStore(context.Background(), db, nil)
+	store := NewBookingStore(context.Background(), db)
 	return &BookingRoute{
 		e:     grouped,
 		db:    db,
