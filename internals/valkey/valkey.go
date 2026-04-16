@@ -1,3 +1,4 @@
+// Package valkey provides a wrapper around the ValKey client
 package valkey
 
 import (
