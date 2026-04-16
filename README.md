@@ -12,7 +12,7 @@ This system uses a **"hold" (soft lock) strategy** backed by a cache layer to te
 
 ## Tech Stack
 
-* **Backend:** Echo + Air
+* **Backend:** Go (Echo + Air)
 * **Cache Layer:** Valkey
 * **Database:** PostgreSQL
 * **Containerization:** Docker
